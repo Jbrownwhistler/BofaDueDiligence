@@ -1,0 +1,298 @@
+/* ============================================================
+   BofaDueDiligence - Bank of America Inspired Theme
+   Colors: Navy #012169, Red #E31837, White, Light Grey
+   ============================================================ */
+
+:root {
+    --bofa-navy: #012169;
+    --bofa-navy-light: #1a3a7a;
+    --bofa-red: #E31837;
+    --bofa-red-dark: #c41530;
+    --bofa-dark: #0a1628;
+    --bofa-grey: #f4f5f7;
+    --bofa-border: #dee2e6;
+    --sidebar-width: 240px;
+}
+
+/* === Global === */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bofa-grey);
+    padding-top: 56px; /* navbar height */
+    color: #333;
+}
+
+/* === Navbar === */
+.bg-bofa-navy { background-color: var(--bofa-navy) !important; }
+.bg-bofa-dark { background-color: var(--bofa-dark) !important; }
+.text-bofa-red { color: var(--bofa-red) !important; }
+.text-bofa-navy { color: var(--bofa-navy) !important; }
+
+.navbar { box-shadow: 0 2px 10px rgba(0,0,0,0.15); z-index: 1030; }
+.navbar-brand { font-size: 1.1rem; }
+
+/* === Sidebar === */
+#sidebar {
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+    min-height: calc(100vh - 56px);
+    position: sticky;
+    top: 56px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    overflow-y: auto;
+}
+
+.sidebar-link {
+    color: rgba(255,255,255,0.7) !important;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    margin: 2px 0;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+    color: white !important;
+    background: rgba(255,255,255,0.1);
+}
+
+.sidebar-link.active {
+    color: white !important;
+    background: var(--bofa-red);
+    font-weight: 600;
+}
+
+.sidebar-divider {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin: 0.5rem 0;
+}
+
+.sidebar-section-title {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.5rem 1rem 0.2rem;
+    list-style: none;
+}
+
+/* === Page Content === */
+#page-content {
+    min-height: calc(100vh - 56px);
+    overflow-x: hidden;
+}
+
+/* === Cards === */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: transform 0.2s;
+}
+
+.card:hover { transform: translateY(-1px); }
+
+.card-header {
+    background: white;
+    border-bottom: 2px solid var(--bofa-grey);
+    font-weight: 600;
+}
+
+/* Stat Cards */
+.stat-card {
+    border-left: 4px solid;
+    padding: 1.2rem;
+}
+.stat-card .stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1;
+}
+.stat-card .stat-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.stat-card .stat-icon {
+    font-size: 2rem;
+    opacity: 0.3;
+}
+
+/* === Tables === */
+.table th {
+    background-color: var(--bofa-navy);
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.table td { vertical-align: middle; font-size: 0.9rem; }
+.table-hover tbody tr:hover { background-color: rgba(1, 33, 105, 0.04); }
+
+/* === Badges / Status === */
+.badge-status {
+    padding: 0.35rem 0.7rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status-en_analyse { background: #0dcaf0; color: #000; }
+.status-documents_demandes { background: #ffc107; color: #000; }
+.status-en_attente_validation { background: #6f42c1; color: #fff; }
+.status-valide { background: #198754; color: #fff; }
+.status-pret_pour_transfert { background: #20c997; color: #000; }
+.status-rejete { background: #dc3545; color: #fff; }
+.status-gele { background: #6c757d; color: #fff; }
+
+.fonds-bloque { background: #ffc107; color: #000; }
+.fonds-gele { background: #6c757d; color: #fff; }
+.fonds-disponible { background: #198754; color: #fff; }
+.fonds-transfere { background: #0d6efd; color: #fff; }
+
+/* === Risk Score === */
+.risk-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* === Buttons === */
+.btn-bofa {
+    background: var(--bofa-red);
+    border-color: var(--bofa-red);
+    color: white;
+    font-weight: 600;
+}
+.btn-bofa:hover {
+    background: var(--bofa-red-dark);
+    border-color: var(--bofa-red-dark);
+    color: white;
+}
+
+.btn-bofa-outline {
+    border: 2px solid var(--bofa-navy);
+    color: var(--bofa-navy);
+    font-weight: 600;
+}
+.btn-bofa-outline:hover {
+    background: var(--bofa-navy);
+    color: white;
+}
+
+/* === Tabs (Case Detail) === */
+.nav-tabs .nav-link {
+    color: var(--bofa-navy);
+    font-weight: 600;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 0.7rem 1.2rem;
+}
+.nav-tabs .nav-link.active {
+    color: var(--bofa-red);
+    border-bottom-color: var(--bofa-red);
+    background: transparent;
+}
+.nav-tabs .nav-link:hover {
+    border-bottom-color: var(--bofa-navy);
+}
+
+/* === Messages === */
+.message-bubble {
+    max-width: 75%;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+.message-sent {
+    background: var(--bofa-navy);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+.message-received {
+    background: #e9ecef;
+    color: #333;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+}
+
+/* === Notifications Dropdown === */
+.notif-menu .notif-item {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.notif-menu .notif-item:hover { background: #f8f9fa; }
+.notif-menu .notif-item.unread { background: #f0f4ff; }
+
+/* === Forms === */
+.form-control:focus, .form-select:focus {
+    border-color: var(--bofa-navy);
+    box-shadow: 0 0 0 0.2rem rgba(1, 33, 105, 0.15);
+}
+
+/* === Checklist === */
+.checklist-item {
+    padding: 0.6rem;
+    border: 1px solid var(--bofa-border);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.checklist-item.completed {
+    background: #d1e7dd;
+    border-color: #a3cfbb;
+}
+
+/* === Audit Log === */
+.audit-entry {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.85rem;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    #sidebar {
+        min-width: 0;
+        max-width: 0;
+        overflow: hidden;
+    }
+    #sidebar.show {
+        min-width: var(--sidebar-width);
+        max-width: var(--sidebar-width);
+        position: fixed;
+        z-index: 1025;
+        top: 56px;
+        left: 0;
+    }
+    .stat-card .stat-value { font-size: 1.4rem; }
+}
+
+/* === Utility === */
+.ls-1 { letter-spacing: 1px; }
+.fs-7 { font-size: 0.85rem; }
+
+/* === Print === */
+@media print {
+    #sidebar, .navbar, .btn { display: none !important; }
+    #page-content { margin: 0; padding: 0; }
+}
