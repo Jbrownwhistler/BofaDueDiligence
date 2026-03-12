@@ -1,0 +1,995 @@
+/*
+ * bofa.css — Feuille de style principale BofaDueDiligence
+ * Application de conformité AML/EDD bancaire
+ *
+ * Palette officielle Bank of America :
+ *   Bleu  : #012169
+ *   Rouge : #E31837
+ *   Blanc : #FFFFFF
+ */
+
+/* ============================================================
+   Variables CSS globales
+   ============================================================ */
+:root {
+    --bofa-bleu:           #012169;
+    --bofa-bleu-clair:     #1a3a8f;
+    --bofa-bleu-fonce:     #000f3d;
+    --bofa-rouge:          #E31837;
+    --bofa-rouge-clair:    #ff3355;
+    --bofa-blanc:          #FFFFFF;
+
+    /* Couleurs fonctionnelles */
+    --bofa-succes:         #198754;
+    --bofa-alerte:         #ffc107;
+    --bofa-danger:         #dc3545;
+    --bofa-info:           #0dcaf0;
+
+    /* Scores de risque */
+    --score-faible:        #198754;
+    --score-faible-bg:     #d1e7dd;
+    --score-moyen:         #fd7e14;
+    --score-moyen-bg:      #ffe5d0;
+    --score-eleve:         #dc3545;
+    --score-eleve-bg:      #f8d7da;
+
+    /* Mise en page */
+    --sidebar-width:       260px;
+    --sidebar-collapsed:   70px;
+    --topbar-height:       60px;
+    --border-radius:       0.5rem;
+    --shadow-sm:           0 1px 4px rgba(1,33,105,.10);
+    --shadow-md:           0 4px 16px rgba(1,33,105,.15);
+    --shadow-lg:           0 8px 32px rgba(1,33,105,.20);
+    --transition:          0.25s ease;
+
+    /* Mode clair */
+    --bg-page:             #f4f6fb;
+    --bg-card:             #FFFFFF;
+    --bg-sidebar:          #012169;
+    --text-primary:        #1a1a2e;
+    --text-secondary:      #6c757d;
+    --text-sidebar:        rgba(255,255,255,.85);
+    --border-color:        #dee2e6;
+    --input-bg:            #FFFFFF;
+    --input-border:        #ced4da;
+    --table-stripe:        #f8f9fc;
+    --hover-bg:            #e8ecf7;
+}
+
+/* ============================================================
+   Variables mode sombre
+   ============================================================ */
+.dark-mode {
+    --bg-dark:             #0A0F1E;
+    --text-dark:           #E8EDF5;
+
+    --bg-page:             #0A0F1E;
+    --bg-card:             #131929;
+    --bg-sidebar:          #080d1a;
+    --text-primary:        #E8EDF5;
+    --text-secondary:      #8899bb;
+    --text-sidebar:        rgba(232,237,245,.85);
+    --border-color:        #1e2a45;
+    --input-bg:            #1a2340;
+    --input-border:        #2a3a5c;
+    --table-stripe:        #111827;
+    --hover-bg:            #1a2544;
+    --shadow-sm:           0 1px 4px rgba(0,0,0,.40);
+    --shadow-md:           0 4px 16px rgba(0,0,0,.50);
+    --shadow-lg:           0 8px 32px rgba(0,0,0,.60);
+}
+
+/* ============================================================
+   Base & réinitialisation
+   ============================================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 0.9375rem;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+    transition: background-color var(--transition), color var(--transition);
+}
+
+a {
+    color: var(--bofa-bleu);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--bofa-bleu-clair);
+}
+
+/* ============================================================
+   Mise en page principale (sidebar + contenu)
+   ============================================================ */
+.bofa-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.bofa-main {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    min-width: 0;
+    transition: margin-left var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.bofa-main.sidebar-collapsed {
+    margin-left: var(--sidebar-collapsed);
+}
+
+.bofa-content {
+    flex: 1;
+    padding: 1.75rem 2rem;
+}
+
+/* ============================================================
+   Barre latérale (sidebar)
+   ============================================================ */
+.bofa-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--bg-sidebar);
+    color: var(--text-sidebar);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1040;
+    transition: width var(--transition);
+    box-shadow: 2px 0 12px rgba(0,0,0,.25);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.2) transparent;
+}
+
+.bofa-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.bofa-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.2);
+    border-radius: 4px;
+}
+
+/* Sidebar repliée */
+.bofa-sidebar.collapsed {
+    width: var(--sidebar-collapsed);
+}
+
+.bofa-sidebar.collapsed .sidebar-label,
+.bofa-sidebar.collapsed .sidebar-brand-text,
+.bofa-sidebar.collapsed .nav-section-title {
+    display: none;
+}
+
+.bofa-sidebar.collapsed .sidebar-item .badge {
+    display: none;
+}
+
+/* Logo / marque */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.1rem;
+    border-bottom: 1px solid rgba(255,255,255,.12);
+    text-decoration: none;
+    min-height: var(--topbar-height);
+}
+
+.sidebar-brand-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--bofa-rouge);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.sidebar-brand-text {
+    line-height: 1.2;
+}
+
+.sidebar-brand-text .brand-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #fff;
+    display: block;
+}
+
+.sidebar-brand-text .brand-sub {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,.55);
+    display: block;
+    letter-spacing: .04em;
+}
+
+/* Navigation */
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    list-style: none;
+    margin: 0;
+}
+
+.nav-section-title {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.4);
+    padding: 0.85rem 1.25rem 0.3rem;
+}
+
+.sidebar-item {
+    position: relative;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.6rem 1.25rem;
+    color: var(--text-sidebar);
+    text-decoration: none;
+    border-radius: 0;
+    transition: background-color var(--transition), color var(--transition);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.sidebar-link:hover {
+    background-color: rgba(255,255,255,.1);
+    color: #fff;
+    text-decoration: none;
+}
+
+.sidebar-link.active {
+    background-color: var(--bofa-rouge);
+    color: #fff;
+}
+
+.sidebar-link .sidebar-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.sidebar-label {
+    flex: 1;
+}
+
+/* Tooltip pour sidebar repliée */
+.bofa-sidebar.collapsed .sidebar-item {
+    position: relative;
+}
+
+.bofa-sidebar.collapsed .sidebar-link {
+    padding: 0.7rem;
+    justify-content: center;
+}
+
+/* Pied de sidebar */
+.sidebar-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(255,255,255,.12);
+}
+
+/* ============================================================
+   Barre supérieure (topbar)
+   ============================================================ */
+.bofa-topbar {
+    height: var(--topbar-height);
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    box-shadow: var(--shadow-sm);
+    gap: 1rem;
+}
+
+.topbar-title {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* ============================================================
+   Surcharges Bootstrap — couleurs BofA
+   ============================================================ */
+.btn-bofa {
+    background-color: var(--bofa-bleu);
+    border-color: var(--bofa-bleu);
+    color: #fff;
+    font-weight: 500;
+}
+
+.btn-bofa:hover,
+.btn-bofa:focus {
+    background-color: var(--bofa-bleu-clair);
+    border-color: var(--bofa-bleu-clair);
+    color: #fff;
+}
+
+.btn-bofa-danger {
+    background-color: var(--bofa-rouge);
+    border-color: var(--bofa-rouge);
+    color: #fff;
+    font-weight: 500;
+}
+
+.btn-bofa-danger:hover,
+.btn-bofa-danger:focus {
+    background-color: var(--bofa-rouge-clair);
+    border-color: var(--bofa-rouge-clair);
+    color: #fff;
+}
+
+.btn-bofa-outline {
+    background-color: transparent;
+    border-color: var(--bofa-bleu);
+    color: var(--bofa-bleu);
+    font-weight: 500;
+}
+
+.btn-bofa-outline:hover {
+    background-color: var(--bofa-bleu);
+    color: #fff;
+}
+
+/* Liens colorés */
+.text-bofa-bleu  { color: var(--bofa-bleu)  !important; }
+.text-bofa-rouge { color: var(--bofa-rouge) !important; }
+
+/* Fond coloré */
+.bg-bofa-bleu  { background-color: var(--bofa-bleu)  !important; color: #fff !important; }
+.bg-bofa-rouge { background-color: var(--bofa-rouge) !important; color: #fff !important; }
+
+/* Formulaire */
+.form-control,
+.form-select {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--bofa-bleu);
+    box-shadow: 0 0 0 0.2rem rgba(1,33,105,.2);
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+}
+
+.dark-mode .form-control,
+.dark-mode .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+}
+
+.dark-mode .form-control:focus,
+.dark-mode .form-select:focus {
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+}
+
+/* Checkbox / radio */
+.form-check-input:checked {
+    background-color: var(--bofa-bleu);
+    border-color: var(--bofa-bleu);
+}
+
+/* ============================================================
+   Cartes
+   ============================================================ */
+.card {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.card-header-bofa {
+    background: linear-gradient(135deg, var(--bofa-bleu), var(--bofa-bleu-clair));
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+}
+
+.card-stat {
+    border-left: 4px solid var(--bofa-bleu);
+}
+
+.card-stat.danger {
+    border-left-color: var(--bofa-rouge);
+}
+
+.card-stat.succes {
+    border-left-color: var(--bofa-succes);
+}
+
+.card-stat.alerte {
+    border-left-color: var(--bofa-alerte);
+}
+
+/* ============================================================
+   Tableaux
+   ============================================================ */
+.table {
+    color: var(--text-primary);
+    --bs-table-bg: var(--bg-card);
+    --bs-table-striped-bg: var(--table-stripe);
+    --bs-table-hover-bg: var(--hover-bg);
+    border-color: var(--border-color);
+}
+
+.table thead th {
+    background-color: var(--bofa-bleu);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    border-color: rgba(255,255,255,.15);
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    transition: background-color var(--transition);
+}
+
+.table tbody tr:hover {
+    background-color: var(--hover-bg);
+}
+
+.dark-mode .table {
+    --bs-table-color: var(--text-primary);
+    --bs-table-bg: var(--bg-card);
+    --bs-table-border-color: var(--border-color);
+    --bs-table-striped-color: var(--text-primary);
+    --bs-table-hover-color: var(--text-primary);
+}
+
+/* ============================================================
+   Badges de score de risque
+   ============================================================ */
+.badge-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35em 0.75em;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.badge-score-faible {
+    color: var(--score-faible);
+    background-color: var(--score-faible-bg);
+}
+
+.badge-score-moyen {
+    color: var(--score-moyen);
+    background-color: var(--score-moyen-bg);
+}
+
+.badge-score-eleve {
+    color: var(--score-eleve);
+    background-color: var(--score-eleve-bg);
+}
+
+/* ============================================================
+   Badges de statut dossier
+   ============================================================ */
+.badge-statut {
+    padding: 0.35em 0.7em;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+.badge-statut-soumis       { background-color: #cfe2ff; color: #084298; }
+.badge-statut-en_revue     { background-color: #fff3cd; color: #664d03; }
+.badge-statut-approuve     { background-color: #d1e7dd; color: #0a3622; }
+.badge-statut-rejete       { background-color: #f8d7da; color: #58151c; }
+.badge-statut-cloture      { background-color: #e2e3e5; color: #41464b; }
+.badge-statut-en_attente   { background-color: #ffe5d0; color: #6e2e0b; }
+.badge-statut-aml_alerte   { background-color: #f8d7da; color: var(--bofa-rouge); border: 1px solid var(--bofa-rouge); }
+
+/* ============================================================
+   Cloche de notifications
+   ============================================================ */
+.notif-bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    transition: background-color var(--transition), color var(--transition);
+    cursor: pointer;
+}
+
+.notif-bell:hover {
+    background-color: var(--hover-bg);
+    color: var(--bofa-bleu);
+}
+
+.notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background-color: var(--bofa-rouge);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border: 2px solid var(--bg-card);
+}
+
+.notif-badge:empty,
+.notif-badge[data-count="0"] {
+    display: none;
+}
+
+/* ============================================================
+   Frise chronologique (timeline)
+   ============================================================ */
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.55rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -1.7rem;
+    top: 0.2rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: var(--bofa-bleu);
+    border: 3px solid var(--bg-card);
+    box-shadow: 0 0 0 2px var(--bofa-bleu);
+}
+
+.timeline-dot.rouge  { background-color: var(--bofa-rouge); box-shadow: 0 0 0 2px var(--bofa-rouge); }
+.timeline-dot.succes { background-color: var(--bofa-succes); box-shadow: 0 0 0 2px var(--bofa-succes); }
+.timeline-dot.alerte { background-color: var(--bofa-alerte); box-shadow: 0 0 0 2px var(--bofa-alerte); }
+
+.timeline-content {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.timeline-meta {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+}
+
+/* ============================================================
+   Page de connexion (standalone)
+   ============================================================ */
+.login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bofa-bleu) 0%, var(--bofa-bleu-fonce) 60%, #1a0a0a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(227,24,55,.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(255,255,255,.04) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.login-card {
+    background: rgba(255,255,255,.97);
+    border-radius: 1rem;
+    box-shadow: 0 24px 64px rgba(0,0,0,.4);
+    padding: 2.5rem 2.75rem;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+}
+
+.dark-mode .login-card {
+    background: rgba(19,25,41,.97);
+    border: 1px solid var(--border-color);
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 1.75rem;
+}
+
+.login-logo-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--bofa-bleu);
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    color: #fff;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 8px 24px rgba(1,33,105,.35);
+}
+
+.login-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+}
+
+.login-title .txt-bleu { color: var(--bofa-bleu); }
+.login-title .txt-rouge { color: var(--bofa-rouge); }
+
+.login-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
+}
+
+/* ============================================================
+   Barre de progression upload
+   ============================================================ */
+.upload-progress-wrap {
+    display: none;
+    margin-top: 0.75rem;
+}
+
+.upload-progress-wrap.active {
+    display: block;
+}
+
+.upload-progress-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bofa-bleu);
+    transition: width 0.2s ease;
+}
+
+/* ============================================================
+   Alerte d'expiration de session
+   ============================================================ */
+#session-warning {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    min-width: 320px;
+    max-width: 420px;
+    border-left: 4px solid var(--bofa-alerte);
+    display: none;
+    animation: slideInRight .3s ease;
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+@keyframes slideInRight {
+    from { transform: translateX(100px); opacity: 0; }
+    to   { transform: translateX(0);     opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: .5; }
+}
+
+.fade-in       { animation: fadeIn .35s ease; }
+
+/* Indicateur de chargement */
+.bofa-spinner {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgba(1,33,105,.2);
+    border-top-color: var(--bofa-bleu);
+    border-radius: 50%;
+    animation: spin .65s linear infinite;
+    display: inline-block;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, var(--border-color) 25%, var(--hover-bg) 50%, var(--border-color) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ============================================================
+   Utilitaires divers
+   ============================================================ */
+.cursor-pointer { cursor: pointer; }
+.font-mono      { font-family: 'Cascadia Code', 'Fira Code', monospace; }
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Séparateur ornemental */
+.divider-bofa {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, var(--bofa-bleu), var(--bofa-rouge), transparent);
+    margin: 1.5rem 0;
+}
+
+/* Pastille de rôle */
+.role-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 50px;
+}
+
+.role-admin  { background-color: #f8d7da; color: var(--bofa-rouge); }
+.role-agent  { background-color: #cfe2ff; color: #084298; }
+.role-client { background-color: #d1e7dd; color: #0a3622; }
+
+/* ============================================================
+   Mode sombre — surcharges composants
+   ============================================================ */
+.dark-mode .card {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+.dark-mode .card-header {
+    background-color: var(--bg-card);
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.dark-mode .modal-content {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.dark-mode .modal-header,
+.dark-mode .modal-footer {
+    border-color: var(--border-color);
+}
+
+.dark-mode .dropdown-menu {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+.dark-mode .dropdown-item {
+    color: var(--text-primary);
+}
+
+.dark-mode .dropdown-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.dark-mode .nav-tabs .nav-link {
+    color: var(--text-secondary);
+}
+
+.dark-mode .nav-tabs .nav-link.active {
+    background-color: var(--bg-card);
+    border-color: var(--border-color) var(--border-color) var(--bg-card);
+    color: var(--text-primary);
+}
+
+.dark-mode .bofa-topbar {
+    background-color: var(--bg-card);
+    border-bottom-color: var(--border-color);
+}
+
+.dark-mode .alert {
+    border: 1px solid var(--border-color);
+}
+
+/* ============================================================
+   Styles responsifs
+   ============================================================ */
+@media (max-width: 991.98px) {
+    .bofa-sidebar {
+        transform: translateX(-100%);
+        transition: transform var(--transition), width var(--transition);
+        z-index: 1050;
+    }
+
+    .bofa-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .bofa-main {
+        margin-left: 0 !important;
+    }
+
+    .bofa-content {
+        padding: 1rem;
+    }
+
+    /* Overlay mobile */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.5);
+        z-index: 1045;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .login-card {
+        padding: 1.75rem 1.5rem;
+    }
+
+    .bofa-content {
+        padding: 0.75rem;
+    }
+
+    .bofa-topbar {
+        padding: 0 0.75rem;
+    }
+}
+
+/* ============================================================
+   Styles d'impression / export PDF
+   ============================================================ */
+@media print {
+    .bofa-sidebar,
+    .bofa-topbar,
+    .btn,
+    .no-print,
+    #session-warning {
+        display: none !important;
+    }
+
+    .bofa-main {
+        margin-left: 0 !important;
+    }
+
+    .bofa-content {
+        padding: 0 !important;
+    }
+
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 11pt;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        break-inside: avoid;
+    }
+
+    .table thead th {
+        background-color: #012169 !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    a {
+        color: #000 !important;
+        text-decoration: none !important;
+    }
+
+    .badge-score,
+    .badge-statut {
+        border: 1px solid #999;
+    }
+}
