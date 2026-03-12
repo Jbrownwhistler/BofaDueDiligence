@@ -1,0 +1,19 @@
+Options -Indexes
+RewriteEngine On
+
+# Bloquer l'accès direct aux dossiers sensibles du back-end
+RewriteRule ^src/       - [F,L]
+RewriteRule ^templates/ - [F,L]
+RewriteRule ^logs/      - [F,L]
+RewriteRule ^uploads/   - [F,L]
+
+# Rediriger vers public/ si la requête ne cible pas déjà ce dossier
+RewriteCond %{REQUEST_URI} !^/bofa/public/
+RewriteRule ^(.*)$ public/$1 [L]
+
+# En-têtes de sécurité HTTP
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
