@@ -354,8 +354,9 @@ class CaseAML
     public function validateTransfer(int $id, int $agentId): bool
     {
         $db = bofa_db();
-        $db->prepare("UPDATE cases SET motif_cloture = 'Transfert validé — en attente d\\'exécution' WHERE id = :id")
-           ->execute([':id' => $id]);
+        $motif = "Transfert validé — en attente d'exécution";
+        $db->prepare("UPDATE cases SET motif_cloture = :motif WHERE id = :id")
+           ->execute([':motif' => $motif, ':id' => $id]);
         bofa_audit($agentId, 'VALIDATE_TRANSFER', 'cases', $id);
         return $this->updateStatus($id, 'en_attente', $agentId, 'Transfert validé par agent AML.');
     }

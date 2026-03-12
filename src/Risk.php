@@ -124,7 +124,10 @@ class Risk
         $sets    = [];
         $params  = [':id' => $id];
 
-        $old = $this->getCountryByCode((string) $id); // pour l'audit
+        // Récupérer les données actuelles pour l'audit (par ID numérique)
+        $oldStmt = bofa_db()->prepare("SELECT * FROM risk_countries WHERE id = :id LIMIT 1");
+        $oldStmt->execute([':id' => $id]);
+        $old = $oldStmt->fetch() ?: null;
 
         foreach ($allowed as $field) {
             if (!array_key_exists($field, $data)) continue;

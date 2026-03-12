@@ -150,9 +150,9 @@ class ApiAuth
      */
     public function getFromRequest(): string|null
     {
-        $header = $_SERVER['HTTP_AUTHORIZATION']
-                  ?? apache_request_headers()['Authorization']
-                  ?? '';
+        // apache_request_headers() n'est disponible que sur Apache avec mod_php
+        $apacheHeaders = function_exists('apache_request_headers') ? (apache_request_headers() ?: []) : [];
+        $header        = $_SERVER['HTTP_AUTHORIZATION'] ?? ($apacheHeaders['Authorization'] ?? '');
 
         if (!$header) return null;
 

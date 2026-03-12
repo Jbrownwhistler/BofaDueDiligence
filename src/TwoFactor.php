@@ -42,6 +42,11 @@ class TwoFactor
     /**
      * Retourne l'URL du QR Code Google Charts pour l'enrôlement TOTP.
      * Format : otpauth://totp/{issuer}:{email}?secret={secret}&issuer={issuer}
+     *
+     * ⚠️ AVERTISSEMENT SÉCURITÉ : Cette URL transmet le secret TOTP aux serveurs
+     * Google. Pour un environnement de production bancaire, remplacer par une
+     * bibliothèque de génération QR locale (ex. endroid/qr-code) afin de ne
+     * jamais exposer le secret à un tiers.
      */
     public function getQRCodeUrl(string $email, string $secret): string
     {
