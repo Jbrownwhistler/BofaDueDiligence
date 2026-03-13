@@ -22,6 +22,25 @@ return [
     'client/profile'        => ['controller' => 'ClientController', 'method' => 'profile', 'role' => 'client'],
     'client/profile/update' => ['controller' => 'ClientController', 'method' => 'updateProfile', 'role' => 'client'],
 
+    // Client - 20 Online Banking Options
+    'client/account-summary'        => ['controller' => 'ClientController', 'method' => 'accountSummary', 'role' => 'client'],
+    'client/compliance-center'      => ['controller' => 'ClientController', 'method' => 'complianceCenter', 'role' => 'client'],
+    'client/kyc-verification'       => ['controller' => 'ClientController', 'method' => 'kycVerification', 'role' => 'client'],
+    'client/risk-profile'           => ['controller' => 'ClientController', 'method' => 'riskProfile', 'role' => 'client'],
+    'client/document-vault'         => ['controller' => 'ClientController', 'method' => 'documentVault', 'role' => 'client'],
+    'client/secure-messages'        => ['controller' => 'ClientController', 'method' => 'secureMessages', 'role' => 'client'],
+    'client/beneficiaries'          => ['controller' => 'ClientController', 'method' => 'beneficiaries', 'role' => 'client'],
+    'client/statements'             => ['controller' => 'ClientController', 'method' => 'statements', 'role' => 'client'],
+    'client/regulatory-alerts'      => ['controller' => 'ClientController', 'method' => 'regulatoryAlerts', 'role' => 'client'],
+    'client/transaction-monitoring' => ['controller' => 'ClientController', 'method' => 'transactionMonitoring', 'role' => 'client'],
+    'client/activity-log'           => ['controller' => 'ClientController', 'method' => 'activityLog', 'role' => 'client'],
+    'client/tax-documents'          => ['controller' => 'ClientController', 'method' => 'taxDocuments', 'role' => 'client'],
+    'client/declarations'           => ['controller' => 'ClientController', 'method' => 'declarations', 'role' => 'client'],
+    'client/reports'                => ['controller' => 'ClientController', 'method' => 'reports', 'role' => 'client'],
+    'client/compliance-training'    => ['controller' => 'ClientController', 'method' => 'complianceTraining', 'role' => 'client'],
+    'client/security-settings'      => ['controller' => 'ClientController', 'method' => 'securitySettings', 'role' => 'client'],
+    'client/help-support'           => ['controller' => 'ClientController', 'method' => 'helpSupport', 'role' => 'client'],
+
     // Agent routes
     'agent/dashboard'           => ['controller' => 'AgentController', 'method' => 'dashboard', 'role' => 'agent'],
     'agent/cases'               => ['controller' => 'AgentController', 'method' => 'caseList', 'role' => 'agent'],
@@ -56,6 +75,12 @@ return [
     'admin/audit'                   => ['controller' => 'AdminController', 'method' => 'auditLog', 'role' => 'admin'],
     'admin/cases'                   => ['controller' => 'AdminController', 'method' => 'allCases', 'role' => 'admin'],
     'admin/case'                    => ['controller' => 'AdminController', 'method' => 'caseDetail', 'role' => 'admin'],
+
+    // Admin - Compliance Management
+    'admin/compliance-overview'     => ['controller' => 'AdminController', 'method' => 'complianceOverview', 'role' => 'admin'],
+    'admin/kyc-management'          => ['controller' => 'AdminController', 'method' => 'kycManagement', 'role' => 'admin'],
+    'admin/client-risk-overview'    => ['controller' => 'AdminController', 'method' => 'clientRiskOverview', 'role' => 'admin'],
+    'admin/banking-services'        => ['controller' => 'AdminController', 'method' => 'bankingServices', 'role' => 'admin'],
 
     // API / AJAX
     'api/notifications'      => ['controller' => 'ApiController', 'method' => 'getNotifications', 'role' => null],
