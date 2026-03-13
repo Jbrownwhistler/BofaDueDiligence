@@ -626,7 +626,7 @@ class ClientController {
         $user = User::findById($userId);
 
         $stmt = getDB()->prepare(
-            'SELECT * FROM audit_log WHERE utilisateur_id = ? AND action LIKE "%onnexion%" ORDER BY date DESC LIMIT 10'
+            'SELECT * FROM audit_log WHERE utilisateur_id = ? AND action LIKE "%connexion%" ORDER BY date DESC LIMIT 10'
         );
         $stmt->execute([$userId]);
         $loginHistory = $stmt->fetchAll();

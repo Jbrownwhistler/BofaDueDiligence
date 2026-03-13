@@ -65,7 +65,7 @@
                                 'Finances' => 'primary',
                                 'Conformité' => 'danger',
                                 'Documents' => 'info',
-                                'Communication' => 'purple',
+                                'Communication' => 'secondary',
                                 default => 'secondary',
                             };
                             ?>
