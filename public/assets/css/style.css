@@ -291,6 +291,112 @@ body {
 .ls-1 { letter-spacing: 1px; }
 .fs-7 { font-size: 0.85rem; }
 
+/* === Banking Service Tiles === */
+.banking-tile {
+    display: block;
+    text-decoration: none;
+    color: #333;
+    background: white;
+    border: 1px solid var(--bofa-border);
+    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.banking-tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(1, 33, 105, 0.15);
+    border-color: var(--bofa-navy);
+    color: #333;
+    text-decoration: none;
+}
+
+.banking-tile:hover .banking-tile-icon {
+    transform: scale(1.1);
+}
+
+.banking-tile-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.8rem;
+    font-size: 1.3rem;
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.banking-tile-label {
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+    color: var(--bofa-navy);
+}
+
+.banking-tile-desc {
+    font-size: 0.72rem;
+    color: #6c757d;
+}
+
+.banking-tile-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: white;
+}
+
+/* Banking tile icon backgrounds */
+.bg-navy-light { background: linear-gradient(135deg, #012169, #1a3a7a); }
+.bg-warning-light { background: linear-gradient(135deg, #ff9800, #ffc107); }
+.bg-success-light { background: linear-gradient(135deg, #198754, #20c997); }
+.bg-danger-light { background: linear-gradient(135deg, #dc3545, #e31837); }
+.bg-info-light { background: linear-gradient(135deg, #0dcaf0, #0aa2c0); }
+.bg-purple-light { background: linear-gradient(135deg, #6f42c1, #9461e5); }
+.bg-teal-light { background: linear-gradient(135deg, #20c997, #0dcaf0); }
+.bg-indigo-light { background: linear-gradient(135deg, #6610f2, #6f42c1); }
+.bg-orange-light { background: linear-gradient(135deg, #fd7e14, #ff9800); }
+.bg-slate-light { background: linear-gradient(135deg, #475569, #64748b); }
+.bg-red-light { background: linear-gradient(135deg, #e31837, #dc3545); }
+.bg-cyan-light { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+.bg-gray-light { background: linear-gradient(135deg, #6b7280, #9ca3af); }
+.bg-emerald-light { background: linear-gradient(135deg, #059669, #10b981); }
+.bg-amber-light { background: linear-gradient(135deg, #d97706, #f59e0b); }
+.bg-blue-light { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+.bg-lime-light { background: linear-gradient(135deg, #65a30d, #84cc16); }
+.bg-dark-light { background: linear-gradient(135deg, #1f2937, #374151); }
+
+/* BofA Navy badge background */
+.bg-bofa-navy { background-color: var(--bofa-navy) !important; }
+
+/* Compliance Score Circle */
+.compliance-score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 4px solid;
+}
+.compliance-score-circle.score-good { border-color: #198754; color: #198754; }
+.compliance-score-circle.score-warning { border-color: #ffc107; color: #ffc107; }
+.compliance-score-circle.score-danger { border-color: #dc3545; color: #dc3545; }
+
 /* === Print === */
 @media print {
     #sidebar, .navbar, .btn { display: none !important; }

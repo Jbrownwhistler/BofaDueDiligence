@@ -7,6 +7,21 @@ class AdminController {
         $totalCases = array_sum($statusCounts);
         $userCounts = User::countByRole();
 
+        // New compliance KPIs
+        $allCases = CaseModel::getAll();
+        $highRiskCount = 0;
+        $frozenCount = 0;
+        $frozenAmount = 0;
+        foreach ($allCases as $c) {
+            if ($c['score_risque'] >= 7) $highRiskCount++;
+            if ($c['statut_fonds'] === 'gele') {
+                $frozenCount++;
+                $frozenAmount += $c['montant'];
+            }
+        }
+
+        $pendingDocsCount = (int)getDB()->query("SELECT COUNT(*) FROM documents WHERE statut_validation = 'en_attente'")->fetchColumn();
+
         $pageTitle = 'Tableau de bord Admin';
         include __DIR__ . '/../../templates/layouts/header.php';
         include __DIR__ . '/../../templates/admin/dashboard.php';
@@ -324,6 +339,156 @@ class AdminController {
         $pageTitle = 'Dossier ' . $case['case_id_unique'];
         include __DIR__ . '/../../templates/layouts/header.php';
         include __DIR__ . '/../../templates/agent/case_detail.php';
+        include __DIR__ . '/../../templates/layouts/footer.php';
+    }
+
+    // ========================================================================
+    // Compliance Management
+    // ========================================================================
+
+    /** Compliance Overview - Global compliance monitoring */
+    public function complianceOverview(): void {
+        $allCases = CaseModel::getAll();
+        $statusCounts = CaseModel::countByStatus();
+        $totalCases = array_sum($statusCounts);
+
+        $highRiskCases = array_filter($allCases, fn($c) => $c['score_risque'] >= 7);
+        $mediumRiskCases = array_filter($allCases, fn($c) => $c['score_risque'] >= 3 && $c['score_risque'] < 7);
+        $lowRiskCases = array_filter($allCases, fn($c) => $c['score_risque'] < 3);
+
+        $frozenCases = array_filter($allCases, fn($c) => $c['statut_fonds'] === 'gele');
+        $pendingValidation = array_filter($allCases, fn($c) => $c['statut'] === 'en_attente_validation');
+        $supervisorRequired = array_filter($allCases, fn($c) => $c['superviseur_requis']);
+
+        $pendingDocsCount = (int)getDB()->query("SELECT COUNT(*) FROM documents WHERE statut_validation = 'en_attente'")->fetchColumn();
+        $totalDocuments = (int)getDB()->query("SELECT COUNT(*) FROM documents")->fetchColumn();
+        $validatedDocs = (int)getDB()->query("SELECT COUNT(*) FROM documents WHERE statut_validation = 'valide'")->fetchColumn();
+
+        $overdue = CaseModel::getOverdue();
+
+        $pageTitle = 'Vue d\'ensemble Conformité';
+        include __DIR__ . '/../../templates/layouts/header.php';
+        include __DIR__ . '/../../templates/admin/compliance_overview.php';
+        include __DIR__ . '/../../templates/layouts/footer.php';
+    }
+
+    /** KYC Management */
+    public function kycManagement(): void {
+        $clients = User::getClients();
+
+        $clientData = [];
+        foreach ($clients as $cl) {
+            $cases = CaseModel::getByClient($cl['id']);
+            $account = Account::getByUser($cl['id']);
+
+            $totalDocs = 0;
+            $validatedDocs = 0;
+            $pendingDocs = 0;
+            foreach ($cases as $c) {
+                $docs = Document::getByCaseId($c['id']);
+                $totalDocs += count($docs);
+                foreach ($docs as $d) {
+                    if ($d['statut_validation'] === 'valide') $validatedDocs++;
+                    if ($d['statut_validation'] === 'en_attente') $pendingDocs++;
+                }
+            }
+
+            $avgRisk = 0;
+            if (!empty($cases)) {
+                $avgRisk = array_sum(array_column($cases, 'score_risque')) / count($cases);
+            }
+
+            $clientData[] = [
+                'user' => $cl,
+                'account' => $account,
+                'cases_count' => count($cases),
+                'total_docs' => $totalDocs,
+                'validated_docs' => $validatedDocs,
+                'pending_docs' => $pendingDocs,
+                'avg_risk' => $avgRisk,
+            ];
+        }
+
+        $pageTitle = 'Gestion KYC';
+        include __DIR__ . '/../../templates/layouts/header.php';
+        include __DIR__ . '/../../templates/admin/kyc_management.php';
+        include __DIR__ . '/../../templates/layouts/footer.php';
+    }
+
+    /** Client Risk Overview */
+    public function clientRiskOverview(): void {
+        $allCases = CaseModel::getAll();
+
+        // Risk distribution
+        $riskDistribution = ['low' => 0, 'medium' => 0, 'high' => 0];
+        $riskByCountry = [];
+        $riskByAsset = [];
+
+        foreach ($allCases as $c) {
+            if ($c['score_risque'] < 3) $riskDistribution['low']++;
+            elseif ($c['score_risque'] < 7) $riskDistribution['medium']++;
+            else $riskDistribution['high']++;
+
+            $country = $c['pays_origine'];
+            if (!isset($riskByCountry[$country])) {
+                $riskByCountry[$country] = ['count' => 0, 'total_risk' => 0, 'total_amount' => 0];
+            }
+            $riskByCountry[$country]['count']++;
+            $riskByCountry[$country]['total_risk'] += $c['score_risque'];
+            $riskByCountry[$country]['total_amount'] += $c['montant'];
+
+            $asset = $c['type_actif'];
+            if (!isset($riskByAsset[$asset])) {
+                $riskByAsset[$asset] = ['count' => 0, 'total_risk' => 0, 'total_amount' => 0];
+            }
+            $riskByAsset[$asset]['count']++;
+            $riskByAsset[$asset]['total_risk'] += $c['score_risque'];
+            $riskByAsset[$asset]['total_amount'] += $c['montant'];
+        }
+
+        // Sort by average risk descending
+        uasort($riskByCountry, fn($a, $b) => ($b['total_risk'] / $b['count']) <=> ($a['total_risk'] / $a['count']));
+        uasort($riskByAsset, fn($a, $b) => ($b['total_risk'] / $b['count']) <=> ($a['total_risk'] / $a['count']));
+
+        $pageTitle = 'Vue d\'ensemble des risques clients';
+        include __DIR__ . '/../../templates/layouts/header.php';
+        include __DIR__ . '/../../templates/admin/client_risk_overview.php';
+        include __DIR__ . '/../../templates/layouts/footer.php';
+    }
+
+    /** Banking Services Management */
+    public function bankingServices(): void {
+        $userCounts = User::countByRole();
+        $totalCases = array_sum(CaseModel::countByStatus());
+        $totalDocuments = (int)getDB()->query("SELECT COUNT(*) FROM documents")->fetchColumn();
+        $totalMessages = (int)getDB()->query("SELECT COUNT(*) FROM messages")->fetchColumn();
+
+        $services = [
+            ['name' => 'Synthèse du compte', 'icon' => 'fa-chart-line', 'route' => 'client/account-summary', 'status' => 'active'],
+            ['name' => 'Fonds en attente', 'icon' => 'fa-hourglass-half', 'route' => 'client/pending', 'status' => 'active'],
+            ['name' => 'Virements & Transferts', 'icon' => 'fa-exchange-alt', 'route' => 'client/history', 'status' => 'active'],
+            ['name' => 'Centre de conformité', 'icon' => 'fa-shield-halved', 'route' => 'client/compliance-center', 'status' => 'active'],
+            ['name' => 'Vérification KYC', 'icon' => 'fa-user-check', 'route' => 'client/kyc-verification', 'status' => 'active'],
+            ['name' => 'Profil de risque', 'icon' => 'fa-chart-pie', 'route' => 'client/risk-profile', 'status' => 'active'],
+            ['name' => 'Coffre-fort documents', 'icon' => 'fa-vault', 'route' => 'client/document-vault', 'status' => 'active'],
+            ['name' => 'Messagerie sécurisée', 'icon' => 'fa-envelope-open-text', 'route' => 'client/secure-messages', 'status' => 'active'],
+            ['name' => 'Bénéficiaires', 'icon' => 'fa-users', 'route' => 'client/beneficiaries', 'status' => 'active'],
+            ['name' => 'Relevés de compte', 'icon' => 'fa-file-invoice-dollar', 'route' => 'client/statements', 'status' => 'active'],
+            ['name' => 'Alertes réglementaires', 'icon' => 'fa-bell', 'route' => 'client/regulatory-alerts', 'status' => 'active'],
+            ['name' => 'Suivi des transactions', 'icon' => 'fa-satellite-dish', 'route' => 'client/transaction-monitoring', 'status' => 'active'],
+            ['name' => 'Journal d\'activité', 'icon' => 'fa-clipboard-list', 'route' => 'client/activity-log', 'status' => 'active'],
+            ['name' => 'Documents fiscaux', 'icon' => 'fa-landmark', 'route' => 'client/tax-documents', 'status' => 'active'],
+            ['name' => 'Centre de déclarations', 'icon' => 'fa-file-signature', 'route' => 'client/declarations', 'status' => 'active'],
+            ['name' => 'Rapports', 'icon' => 'fa-chart-bar', 'route' => 'client/reports', 'status' => 'active'],
+            ['name' => 'Formation conformité', 'icon' => 'fa-graduation-cap', 'route' => 'client/compliance-training', 'status' => 'active'],
+            ['name' => 'Sécurité du compte', 'icon' => 'fa-lock', 'route' => 'client/security-settings', 'status' => 'active'],
+            ['name' => 'Mon profil', 'icon' => 'fa-user-circle', 'route' => 'client/profile', 'status' => 'active'],
+            ['name' => 'Aide & Support', 'icon' => 'fa-life-ring', 'route' => 'client/help-support', 'status' => 'active'],
+        ];
+
+        $pageTitle = 'Gestion des services bancaires';
+        include __DIR__ . '/../../templates/layouts/header.php';
+        include __DIR__ . '/../../templates/admin/banking_services.php';
         include __DIR__ . '/../../templates/layouts/footer.php';
     }
 }
